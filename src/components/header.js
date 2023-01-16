@@ -21,11 +21,11 @@ function Header() {
   <CssBaseline/>
   <AppBar
     position="static"
-    color="white"
+    color="inherit"
     elevation={0}
     className="1px solid">
     <Toolbar>
-      <Typography variant='h6' color='inherit' noWrap>
+      <Typography variant='h6' color="inherit" noWrap>
         TopBar
       </Typography>
     </Toolbar>
