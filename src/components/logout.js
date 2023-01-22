@@ -16,5 +16,5 @@ export default function LogOut() {
         axiosInstance.defaults.headers["Authorization"] = null;
         history('/login');
     });
-    return (<h1> Successfully Logged Out </h1>);
+    return <div>LogOut</div>
 }

@@ -6,6 +6,8 @@ import Grid from '@material-ui/core/Grid';
 import { Typography } from '@material-ui/core';
 import Container from '@material-ui/core/Container';
 import CardMedia from '@material-ui/core/CardMedia';
+import Link from '@material-ui/core/Link';
+import { NavLink } from 'react-router-dom';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -37,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
 const Posts = (props) => {
   const {posts} = props;
   const classes = useStyles();
-  if (!posts || posts.length === 0) return <p> Sorry, Couldnt Find Any Posts</p>;
+  if (!posts || posts.detail) return <p> Sorry, Couldnt Find Any Posts</p>;
   return (
     <>
       <Container maxWidth="md" component="main">
@@ -47,10 +49,17 @@ const Posts = (props) => {
               //Enterprise Card is Full Width at The Sm BreakPoint
               <Grid item key={post.id} xs={12} md={4}>
                 <Card className={classes.card}>
-                  <CardMedia
-                    className={classes.cardMedia}
-                    image="/maxresdefault-1-5-1024x576.webp"
-                  />
+                  <Link
+                  color='textPrimary'
+                  className={classes.link}
+                  href={'post/' + post.slug}
+
+                  >
+                    <CardMedia
+                      className={classes.cardMedia}
+                      image="/maxresdefault-1-5-1024x576.webp"
+                    />
+                  </Link>
                   <CardContent className={classes.CardContent} style={{ maxHeight: "140px",minHeight: "140px" }}>
                     <Typography gutterBottom variant='h6' component="h2" className={classes.postTitle} >
                       {post.title.substr(0, 50)}...

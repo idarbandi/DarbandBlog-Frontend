@@ -8,7 +8,7 @@ function PostLoadingComponent(Components) {
       <p style={{ fontSize: "25px" }}>
         We Await The Data ...!
       </p>
-    );
+    );  
   };
 }
 

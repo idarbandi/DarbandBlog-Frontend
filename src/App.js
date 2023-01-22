@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./App.css";
 import Posts from "./components/Posts";
 import PostLoadingComponent from "./components/Loading";
+import axiosInstance from "./axios";
 
 export default function App() {
   const PostLoading = PostLoadingComponent(Posts)
@@ -11,18 +12,16 @@ export default function App() {
   });
   useEffect(() => {
     SetappState({ Loading: true });
-    const api_url = "http://127.0.0.1:8000/blog";
-    fetch(api_url)
-      .then((response) => response.json())
+    axiosInstance.get().then((response) => response.data)
       .then((posts) => {
         SetappState({ posts, Loading: false });
-  });
+      });
   }, [SetappState]);
 
   return (
     <div className="App">
       <h1>Latest Posts</h1>
-        <PostLoading isLoading={appState.Loading} posts={appState.posts} />
+      <PostLoading isLoading={appState.Loading} posts={appState.posts} />
     </div>
   );
 }

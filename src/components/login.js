@@ -15,127 +15,127 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 
 const useStyles = makeStyles((theme) => ({
-    paper: {
-        marginTop: theme.spacing(8),
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-    },
-    avatar: {
-        margin: theme.spacing(1),
-        backgroundColor: theme.palette.secondary.main,
-    },
-    form: {
-        width: "100%", //Fixing IE 11 ISSUE
-        marginTop: theme.spacing(3),
-    },
-    submit: {
-        margin: theme.spacing(3, 0, 2),
-    },
+  paper: {
+    marginTop: theme.spacing(8),
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main,
+  },
+  form: {
+    width: "100%", //Fixing IE 11 ISSUE
+    marginTop: theme.spacing(3),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+  },
 }));
 
 export default function LogIn() {
-    const history = useNavigate();
-    const initialFormData = Object.freeze({
-        email: "",
-        username: "",
-        password: "",
+  const history = useNavigate();
+  const initialFormData = Object.freeze({
+    email: "",
+    password: "",
+  });
+
+  const [formData, updateFormData] = useState(initialFormData);
+
+  const handleChange = (e) => {
+    updateFormData({
+      ...formData,
+      // Trimming Any WhiteSpace
+      [e.target.name]: e.target.value.trim(),
     });
+  };
 
-    const [formData, updateFormData] = useState(initialFormData);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(formData);
 
-    const handleChange = (e) => {
-        updateFormData({
-            ...formData,
-            // Trimming Any WhiteSpace
-            [e.target.name]: e.target.value.trim(),
-        });
-    };
+    axiosInstance
+      .post('token/', {
+        email: formData.email,
+        password: formData.password,
+      })
+      .then((res) => {
+        localStorage.setItem("access_token", res.data.access);
+        localStorage.setItem("refresh_token", res.data.refresh);
+        axiosInstance.defaults.headers["Authorization"] =
+          "JWT " + localStorage.getItem("access_token");
+        history("/");
+      });
+  };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log(formData);
+  const classes = useStyles();
 
-        axiosInstance
-            .post(`token/`, {
-                email: formData.email,
-                password: formData.password,
-            })
-            .then((res) => {
-                localStorage.setItem("access_token", res.data.access);
-                localStorage.setItem("refresh_token", res.data.refresh);
-                axiosInstance.defaults.headers["Authorization"] = 
-                    "JWT " + localStorage.getItem("access_token");
-                history('/');
-
-            });
-    };
-
-    const classes = useStyles();
-
-    return (
-        <Container component="main" maxWidth="xs">
-            <CssBaseline />
-            <div className={classes.paper}>
-                <Avatar className={classes.avatar}></Avatar>
-                <Typography component="h1" variant="h5">
-                    SignUp
-                </Typography>
-                <form className={classes.form} noValidate>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                            <TextField
-                                variant="outlined"
-                                required
-                                fullWidth
-                                id="email"
-                                label="Email Address"
-                                name="email"
-                                autoComplete="email"
-                                onChange={handleChange}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                variant="outlined"
-                                required
-                                fullWidth
-                                id="password"
-                                label="Password"
-                                name="password"
-                                autoComplete="password"
-                                onChange={handleChange}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        value="remember"
-                                        color="primary" />}
-                                label="Remember Me"
-                            />
-                        </Grid>
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            className={classes.submit}
-                            onClick={handleSubmit}
-                        >
-                            Log In
-                        </Button>
-                        <Grid container justify="flex-end" style={{ marginBottom: "50px" }}>
-                            <Grid item>
-                                <Link href="#" variant="body2">
-                                    Already have an account ? SignIn
-                                </Link>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                </form>
-            </div>
-        </Container>
-    );
+  return (
+    <Container component="main" maxWidth="xs">
+      <CssBaseline />
+      <div className={classes.paper}>
+        <Avatar className={classes.avatar}></Avatar>
+        <Typography component="h1" variant="h5">
+          SignUp
+        </Typography>
+        <form className={classes.form} noValidate>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                id="password"
+                label="Password"
+                name="password"
+                autoComplete="password"
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <FormControlLabel
+                control={<Checkbox value="remember" color="primary" />}
+                label="Remember Me"
+              />
+            </Grid>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+              onClick={handleSubmit}
+            >
+              Log In
+            </Button>
+            <Grid container>
+              <Grid item xs>
+                <Link href="#" variant="body2">
+                  Forgot Password
+                </Link>
+              </Grid>
+            </Grid>
+            <Grid item>
+              <Link href="#" variant="body2">
+                Dont Have an Account? Sign Up
+              </Link>
+            </Grid>
+          </Grid>
+        </form>
+      </div>
+    </Container>
+  );
 }
