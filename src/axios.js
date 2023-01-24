@@ -36,7 +36,7 @@ axiosInstance.interceptors.response.use(
             error.response.status === 401 &&
             originalRequest.url === baseURL + 'token/refresh/'
         ) {
-            window.location.href = `/login/`;
+            window.location.href = `login/`;
             return Promise.reject(error);
         }
 
@@ -44,7 +44,7 @@ axiosInstance.interceptors.response.use(
             error.response.status === 401 && 
             originalRequest.url === baseURL + 'token/refresh/'
         ) {
-            window.location.href = "/login/";
+            window.location.href = "login/";
             return Promise.reject(error);
         }
 
@@ -64,7 +64,7 @@ axiosInstance.interceptors.response.use(
 
                 if (TokenParts.exp > now) {
                     return axiosInstance
-                        .post('/token/refresh/', { refresh: refrehtoken })
+                        .post('token/refresh/', { refresh: refrehtoken })
                         .then((response) => {
                             localStorage.setItem("access_token", response.data.access);
                             localStorage.setItem("refresh_token", response.data.refresh);
@@ -81,11 +81,11 @@ axiosInstance.interceptors.response.use(
                         });
                 } else {
                     console.log("refresh token is Expired", TokenParts.exp, now);
-                    window.location.href = '/login/';
+                    window.location.href = 'login/';
                 }
             } else {
                 console.log("Refresh token not available");
-                window.location.href = '/login/';
+                window.location.href = 'login/';
             }
         }
 

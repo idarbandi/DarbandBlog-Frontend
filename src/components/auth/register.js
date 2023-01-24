@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axiosInstance from "../axios";
+import axiosInstance from "../../axios";
 import { useNavigate } from "react-router-dom";
 //Material_UI
 import Avatar from "@material-ui/core/Avatar";
@@ -34,10 +34,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function LogIn() {
+export default function SignUp() {
   const history = useNavigate();
   const initialFormData = Object.freeze({
     email: "",
+    username: "",
     password: "",
   });
 
@@ -56,16 +57,15 @@ export default function LogIn() {
     console.log(formData);
 
     axiosInstance
-      .post('token/', {
+      .post(`user/register/`, {
         email: formData.email,
+        user_name: formData.username,
         password: formData.password,
       })
       .then((res) => {
-        localStorage.setItem("access_token", res.data.access);
-        localStorage.setItem("refresh_token", res.data.refresh);
-        axiosInstance.defaults.headers["Authorization"] =
-          "JWT " + localStorage.getItem("access_token");
-        history("/");
+        history.push("/login");
+        // console.log(res),
+        // console.log(res.data)
       });
   };
 
@@ -98,6 +98,18 @@ export default function LogIn() {
                 variant="outlined"
                 required
                 fullWidth
+                id="username"
+                label="Username"
+                name="username"
+                autoComplete="username"
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
                 id="password"
                 label="Password"
                 name="password"
@@ -107,8 +119,11 @@ export default function LogIn() {
             </Grid>
             <Grid item xs={12}>
               <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Remember Me"
+                control={
+                  <Checkbox
+                    value="allowExtraEmails"
+                                      color="primary" />}
+                    label="I Want To receive inspiration, marketing promption and Updates"
               />
             </Grid>
             <Button
@@ -119,23 +134,18 @@ export default function LogIn() {
               className={classes.submit}
               onClick={handleSubmit}
             >
-              Log In
+                Sign Up
             </Button>
-            <Grid container>
-              <Grid item xs>
+            <Grid container justify="flex-end" style={{marginBottom: "50px"}}>
+              <Grid item>
                 <Link href="#" variant="body2">
-                  Forgot Password
+                  Already have an account ? SignIn
                 </Link>
               </Grid>
-            </Grid>
-            <Grid item>
-              <Link href="#" variant="body2">
-                Dont Have an Account? Sign Up
-              </Link>
             </Grid>
           </Grid>
         </form>
       </div>
     </Container>
   );
-}
+};

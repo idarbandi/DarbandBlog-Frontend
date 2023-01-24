@@ -42,7 +42,7 @@ const Posts = (props) => {
   if (!posts || posts.detail) return <p> Sorry, Couldnt Find Any Posts</p>;
   return (
     <>
-      <Container maxWidth="md" component="main">
+      <Container maxWidth="sm" component="main">
         <Grid container spacing={5} alignItems="flex-end" style={{ maxHight: "20px" }}>
           {posts.map((post)=> {
             return (
