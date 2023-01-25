@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from '../../axios';
+import axios from "axios";
 //Material-ui
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
@@ -37,21 +38,21 @@ export default function Create() {
         const a = 'àáâäæãåāăąçćčđďèéêëēėęěğǵḧîïíīįìıİłḿñńǹňôöòóœøōõőṕŕřßśšşșťțûüùúūǘůűųẃẍÿýžźż·/_,:;'
         const b = 'aaaaaaaaaacccddeeeeeeeegghiiiiiiiilmnnnnoooooooooprrsssssttuuuuuuuuuwxyyzzz------'
         const p = new RegExp(a.split('').join('|'), 'g');
-        
+
         //slugify.js By hagemann 
-                   //https://gist.github.com
+        //https://gist.github.com
 
 
         return string
-        .toString()
-        .toLowerCase()
-        .replace(/\s+/g, '-') //Replace space with -
-        .replace(p, (c) => b.charAt(a.indexOf(c))) //Replace Special Characters 
-        .replace(/&/g, '-and-') //replace & with (and)
-        .replace(/[^\w\-] + /g, '') //Remove all Non-Word Characters 
-        .replace(/\-\-+/g, '-') //Replace Multiple - with Only One 
-        .replace(/^-+/,'') // trim - from start of text
-        .replace(/-+$/, '') // trim - from end of text
+            .toString()
+            .toLowerCase()
+            .replace(/\s+/g, '-') //Replace space with -
+            .replace(p, (c) => b.charAt(a.indexOf(c))) //Replace Special Characters 
+            .replace(/&/g, '-and-') //replace & with (and)
+            .replace(/[^\w\-] + /g, '') //Remove all Non-Word Characters 
+            .replace(/\-\-+/g, '-') //Replace Multiple - with Only One 
+            .replace(/^-+/, '') // trim - from start of text
+            .replace(/-+$/, '') // trim - from end of text
     }
 
     const history = useNavigate();
@@ -62,19 +63,25 @@ export default function Create() {
         content: '',
     });
 
-    const [formData, UpdateformData] = useState(initialFormData);
+    const [postData, SetpostData] = useState(initialFormData);
+    const [postImage, setpostImage] = useState(null);
 
     const handleChange = (e) => {
+        if ([e.target.name] == 'image') {
+            setpostImage({
+                image: e.target.files,
+            })
+        };
         if ([e.target.name] == 'title') {
-            UpdateformData({
-                ...formData,
+            SetpostData({
+                ...postData,
                 //Triming Any WhiteSpaces
                 [e.target.name]: e.target.value.trim(),
                 ['slug']: slugify(e.target.value.trim()),
             });
         } else {
-            UpdateformData({
-                ...formData,
+            SetpostData({
+                ...postData,
                 //Triming Any WhiteSpaces
                 [e.target.name]: e.target.value.trim()
             });
@@ -83,27 +90,41 @@ export default function Create() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axiosInstance.post
-        (`admin/create/`, {
-            title: formData.title,
-            slug: formData.slug,
-            author: 1,
-            excerpt: formData.excerpt,
-            content: formData.content,
-            category: 1
-        })
-        .then((res) => {
-            history('/admin/');
-        }).catch((err) => {
-            console.log(err)
-        });
+        var FormData = require('form-data');
+        var data = new FormData();
+        data.append('title', postData.title);
+        data.append('content', postData.content);
+        data.append('category', '1');
+        data.append('author', '1');
+        data.append('slug', postData.slug);
+        data.append('image', postImage.image[0]);
+        data.append('status', 'published');
+        data.append('excerpt', postData.excerpt);
+        var config = {
+            method: 'post',
+            url: 'http://127.0.0.1:8000/api/admin/create/',
+            headers: {
+                "Content-Type": "multipart/form-data"
+            },
+            data: data
+        };
+
+        axios(config)
+            .then(function (response) {
+                history({
+                    pathname: '/admin/',
+                })
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
     };
 
     const classes = useStyles();
 
-    return(
+    return (
         <Container component="main" maxWidth="xs">
-            <CssBaseline/>
+            <CssBaseline />
             <div className={classes.paper}>
                 <Avatar className={classes.avatar}></Avatar>
                 <Typography component="h1" variant="h5">
@@ -112,14 +133,14 @@ export default function Create() {
                 <form className={classes.form} noValidate>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
-                            <TextField variant="outlined" 
-                            required
-                            fullWidth
-                            id="title"
-                            label="Post title"
-                            name="title"
-                            autoComplete="title"
-                            onChange={handleChange}/>
+                            <TextField variant="outlined"
+                                required
+                                fullWidth
+                                id="title"
+                                label="Post title"
+                                name="title"
+                                autoComplete="title"
+                                onChange={handleChange} />
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
@@ -144,7 +165,7 @@ export default function Create() {
                                 label="slug"
                                 name="slug"
                                 autoComplete="slug"
-                                value={formData.slug}
+                                value={postData.slug}
                                 onChange={handleChange}
                                 multiline
                                 rows={4}
@@ -164,6 +185,15 @@ export default function Create() {
                                 rows={4}
                             />
                         </Grid>
+                        <input
+                            accept="image/*"
+                            className={classes.input}
+                            id="icon-button"
+                            onChange={handleChange}
+                            name="image"
+                            type='file'
+
+                        />
                     </Grid>
                     <Button
                         type="submit"

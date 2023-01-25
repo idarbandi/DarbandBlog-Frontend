@@ -73,7 +73,7 @@ const Search = () => {
                                     >
                                         <CardMedia
                                             className={classes.cardMedia}
-                                            image="/Qatar_Cup.webp"
+                                            image={post.image}
                                         />
                                     </Link>
                                     <CardContent className={classes.CardContent} style={{ maxHeight: "140px", minHeight: "140px" }}>
