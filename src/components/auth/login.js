@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import axiosInstance from "../../axios";
+import axiosInstance from "../../axios/login";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 //Material_UI
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
@@ -11,8 +12,15 @@ import Checkbox from "@material-ui/core/Checkbox";
 import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
+import ReactFacebookLogin from 'react-facebook-login';
+import GoogleLogin from "react-google-login";
+import ReactGoogleLogin from '../../axios/googleLogin';
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+import Facebooklogin from "../../axios/facebooklogin";
+
+
+
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -51,22 +59,34 @@ export default function LogIn() {
     });
   };
 
+  const responseFacebook = (response) => {
+    ReactFacebookLogin(response.access_token);
+  }
+
+  const responseGoogle = (response) => {
+    ReactGoogleLogin(response.access_token)
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(formData);
 
-    axiosInstance
-      .post('token/', {
-        email: formData.email,
+    axios
+      .post("http://127.0.0.1:8000/api/auth/token/", {
+        grant_type: 'password',
+        username: formData.email,
         password: formData.password,
+        client_id: "4nMXyQkDNi5290RyBmnyk7DQBnR9SUf0g1qCKSew",
+        client_secret: "8zv6lYfuP1dZf85rsAaFB7Vx1OQJQCvzWQ5e91GUguttwUrHaiZexVfWUx2kVanVd77t35vKsN6Wp9Tk1NkJQW2FIwFjTgWwN1LVeI4k4f0P5Q1oGxco2bUBc1AbUJgL"
       })
       .then((res) => {
-        localStorage.setItem("access_token", res.data.access);
-        localStorage.setItem("refresh_token", res.data.refresh);
-        axiosInstance.defaults.headers["Authorization"] =
-          "JWT " + localStorage.getItem("access_token");
-        history("/");
-      });
+        localStorage.setItem("access_token", res.data.access_token);
+        localStorage.setItem("refresh_token", res.data.refresh_token); 
+      }).then(
+        history("/")
+      )
+      
+      ;
   };
 
   const classes = useStyles();
@@ -121,6 +141,17 @@ export default function LogIn() {
             >
               Log In
             </Button>
+            <ReactFacebookLogin
+              appId="ddeeed"
+              fields="name, email, picture"
+              callback={responseFacebook}
+              className={classes.facebook}
+            />
+            <GoogleLogin
+              appId="your app ID"
+              fields="name, email, picture"
+              callback={responseGoogle}
+            />
             <Grid container>
               <Grid item xs>
                 <Link href="#" variant="body2">

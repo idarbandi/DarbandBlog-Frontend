@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import axiosInstance from "../../axios";
+import axiosInstance from "../../axios/login";
 //Material-ui
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";

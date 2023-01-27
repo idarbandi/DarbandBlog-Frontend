@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./App.css";
 import Posts from "./components/posts/Posts";
 import PostLoadingComponent from "./components/posts/Loading";
-import axiosInstance from "./axios";
+import axiosInstance from "./axios/login";
 
 export default function App() {
   const PostLoading = PostLoadingComponent(Posts)

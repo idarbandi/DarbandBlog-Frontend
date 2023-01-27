@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axiosInstance from "../../axios";
+import axiosInstance from "../../axios/login";
 import { useNavigate } from "react-router-dom";
 //Material_UI
 import Avatar from "@material-ui/core/Avatar";
